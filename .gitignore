@@ -1,0 +1,28 @@
+# Node
+node_modules/
+*.log
+npm-debug.log*
+
+# Next.js
+.next/
+out/
+build/
+next-env.d.ts.bak
+
+# Env — never commit real secrets or API URLs meant to stay private
+.env
+.env.local
+.env.deployed
+!.env.example
+
+# OS
+.DS_Store
+*.swp
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
