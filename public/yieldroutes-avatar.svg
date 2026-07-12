@@ -1,0 +1,30 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>YieldRoutes</title>
+  <desc>YieldRoutes mark on a dark rounded-square backing, for use as a GitHub organization avatar.</desc>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161326"/>
+      <stop offset="100%" stop-color="#0d0b16"/>
+    </linearGradient>
+    <linearGradient id="routeGradientA" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#3ae8c4"/>
+      <stop offset="100%" stop-color="#9c8cff"/>
+    </linearGradient>
+    <linearGradient id="starGradientA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c451"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="48" fill="url(#bgGradient)"/>
+
+  <g transform="translate(28, 28) scale(1.56)">
+    <circle cx="18" cy="38" r="3.2" fill="#3ae8c4" opacity="0.55"/>
+    <path d="M18,38 Q58,22 81,64" fill="none" stroke="#3ae8c4" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+    <circle cx="18" cy="90" r="3.2" fill="#9c8cff" opacity="0.55"/>
+    <path d="M18,90 Q58,106 81,64" fill="none" stroke="#9c8cff" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+    <circle cx="18" cy="64" r="3.8" fill="#3ae8c4"/>
+    <path d="M18,64 Q54,64 81,64" fill="none" stroke="url(#routeGradientA)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M96,49 L101.66,58.34 L111,64 L101.66,69.66 L96,79 L90.34,69.66 L81,64 L90.34,58.34 Z" fill="url(#starGradientA)"/>
+  </g>
+</svg>

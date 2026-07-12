@@ -1,0 +1,17 @@
+<svg width="64" height="64" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>YieldRoutes</title>
+  <desc>Simplified YieldRoutes mark for favicon use at small sizes.</desc>
+  <defs>
+    <linearGradient id="routeGradientF" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#1dd9b3"/>
+      <stop offset="100%" stop-color="#7B61FF"/>
+    </linearGradient>
+    <linearGradient id="starGradientF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c451"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="18" cy="64" r="6" fill="#1dd9b3"/>
+  <path d="M18,64 Q54,64 81,64" fill="none" stroke="url(#routeGradientF)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M97,45 L104,56 L116,64 L104,72 L97,83 L90,72 L78,64 L90,56 Z" fill="url(#starGradientF)"/>
+</svg>

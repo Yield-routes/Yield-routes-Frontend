@@ -1,0 +1,28 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>YieldRoutes</title>
+  <desc>Three route paths of varying color converge on a faceted waypoint marker, representing best-price route aggregation, compounding yield, and a subtle nod to the Stellar network.</desc>
+  <defs>
+    <linearGradient id="routeGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#1dd9b3"/>
+      <stop offset="100%" stop-color="#7B61FF"/>
+    </linearGradient>
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c451"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- alternative routes considered, rendered thinner and lower-opacity -->
+  <circle cx="18" cy="38" r="3.2" fill="#1dd9b3" opacity="0.5"/>
+  <path d="M18,38 Q58,22 81,64" fill="none" stroke="#1dd9b3" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+
+  <circle cx="18" cy="90" r="3.2" fill="#7B61FF" opacity="0.5"/>
+  <path d="M18,90 Q58,106 81,64" fill="none" stroke="#7B61FF" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- best route: the one actually executed, full weight -->
+  <circle cx="18" cy="64" r="3.8" fill="#1dd9b3"/>
+  <path d="M18,64 Q54,64 81,64" fill="none" stroke="url(#routeGradient)" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- convergence point: a faceted waypoint marker -->
+  <path d="M96,49 L101.66,58.34 L111,64 L101.66,69.66 L96,79 L90.34,69.66 L81,64 L90.34,58.34 Z" fill="url(#starGradient)"/>
+</svg>

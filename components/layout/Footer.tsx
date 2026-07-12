@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useNetworkStore } from '@/lib/network-store';
 
 const nav = [
@@ -33,11 +34,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5 w-fit">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500
-                              flex items-center justify-center text-xs font-bold font-display text-white shadow-lg
-                              shadow-primary-500/20">
-                Y
-              </div>
+              <Image src="/yieldroutes-icon.svg" alt="" width={28} height={28} className="rounded-lg shadow-lg shadow-primary-500/20" />
               <span className="font-bold font-display tracking-tight bg-gradient-to-r from-primary-300 to-primary-500
                                bg-clip-text text-transparent">
                 YieldRoutes

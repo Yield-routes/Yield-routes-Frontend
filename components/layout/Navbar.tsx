@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
@@ -67,11 +68,7 @@ export function Navbar() {
         <div className="relative container mx-auto px-4 max-w-7xl flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500
-                            flex items-center justify-center text-sm font-bold font-display
-                            shadow-lg shadow-primary-500/20 text-white">
-              Y
-            </div>
+            <Image src="/yieldroutes-icon.svg" alt="" width={32} height={32} className="rounded-lg shadow-lg shadow-primary-500/20" />
             <span className="font-bold font-display text-lg tracking-tight bg-gradient-to-r
                              from-primary-300 to-primary-500 bg-clip-text text-transparent">
               YieldRoutes
