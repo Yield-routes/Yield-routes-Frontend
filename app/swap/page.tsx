@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { clsx } from 'clsx';
+import type { RouteQuote, RouteLeg } from '@/lib/types';
+
 
 const TOKENS = [
   { symbol: 'USDC', address: 'USDC_PLACEHOLDER', decimals: 7, balance: '1,245.32' },
@@ -22,7 +23,7 @@ export default function SwapPage() {
   const [tokenOut, setTokenOut] = useState(TOKENS[1]);
   const [amountIn, setAmountIn] = useState('');
   const [slippage, setSlippage] = useState(0.5);
-  const [quote, setQuote]       = useState<any>(null);
+  const [quote, setQuote]       = useState<RouteQuote | null>(null);
 
   const quoteMut = useMutation({
     mutationFn: () => api.getQuote(tokenIn.address, tokenOut.address, Number(amountIn), 3),
@@ -30,7 +31,7 @@ export default function SwapPage() {
   });
 
   const executeMut = useMutation({
-    mutationFn: () => api.executeRoute(quote.id, 'PLACEHOLDER_WALLET', quote.expectedOut * (1 - slippage / 100)),
+    mutationFn: () => api.executeRoute(quote!.id, 'PLACEHOLDER_WALLET', quote!.expectedOut * (1 - slippage / 100)),
     onSuccess: () => { setQuote(null); setAmountIn(''); },
   });
 
@@ -218,7 +219,7 @@ export default function SwapPage() {
             <h3 className="text-sm font-semibold font-heading" style={{ color: 'var(--text-primary)' }}>Pools Involved</h3>
             {quote?.legs?.length ? (
               <div className="space-y-2">
-                {quote.legs.map((leg: any, i: number) => (
+                {quote.legs.map((leg: RouteLeg, i: number) => (
                   <div key={i} className="text-xs flex items-center gap-2 p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                     <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold"
                       style={{ background: 'var(--badge-live-bg)', color: 'var(--primary-400)' }}>{i + 1}</span>

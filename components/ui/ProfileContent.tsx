@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { format } from 'date-fns';
-import type { DepositorInfo } from '@/lib/types';
+import type { VaultDeposit } from '@/lib/types';
 import { Icon } from '@/components/ui/Icon';
 
 const v = (c: string) => ({ color: `var(${c})` });
@@ -105,7 +105,7 @@ export function ProfileContent() {
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: 'Shares',   value: (data.shares / 1e9).toFixed(4) },
-              { label: 'Price',    value: ((data as any).sharePrice / 1e9 || 0).toFixed(4) + ' USDC' },
+              { label: 'Price',    value: (data.sharePrice / 1e9 || 0).toFixed(4) + ' USDC' },
               { label: 'Value',    value: (data.estimatedValue ?? 0).toFixed(2) + ' USDC' },
               { label: 'Deposits', value: String(data.deposits?.length ?? 0) },
             ].map(s => (
@@ -123,7 +123,7 @@ export function ProfileContent() {
                 Deposit History
               </h3>
               <div className="space-y-2">
-                {data.deposits.map((d: any, i: number) => (
+                {data.deposits.map((d: VaultDeposit, i: number) => (
                   <div key={d.id}
                     className="flex justify-between items-center text-xs py-2"
                     style={i < data.deposits.length - 1 ? { borderBottom: '1px solid var(--border-muted)' } : {}}>

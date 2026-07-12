@@ -70,7 +70,7 @@ export default function VaultPage() {
             { label: 'Share Price',    value: `${(stats?.sharePrice ?? 1).toFixed(6)}` },
             { label: 'Total Harvests', value: String(stats?.harvestCount ?? 0) },
             { label: 'Yield Earned',   value: `${(stats?.totalYieldHarvested ?? 0).toLocaleString()} USDC` },
-          ].map((s, i) => (
+          ].map((s) => (
             <div key={s.label} className="stat-card">
               <div className="stat-value text-2xl">{s.value}</div>
               <div className="stat-label">{s.label}</div>
