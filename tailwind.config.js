@@ -24,10 +24,10 @@ module.exports = {
         pink:    { 400: 'var(--pink-400)', 500: 'var(--pink-500)' },
       },
       fontFamily: {
-        sans: ['var(--font-raleway)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-playfair)', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-raleway)', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['var(--font-detacher)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-detacher)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-modius)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-space-mono)', 'monospace'],
       },
       boxShadow: {
         'card': 'var(--shadow-card)',

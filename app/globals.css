@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Self-hosted fonts ─── */
+@font-face {
+  font-family: 'Detacher';
+  src: url('/fonts/Detacher.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Modius Extended';
+  src: url('/fonts/ModiusExtended-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-detacher: 'Detacher', system-ui, sans-serif;
+  --font-modius: 'Modius Extended', system-ui, sans-serif;
+}
+
 /* ─── Theme: Dark (default) ─── */
 :root {
   --base: #07050a;
@@ -324,6 +345,7 @@
     @apply text-white antialiased;
     background: var(--base);
     color: var(--text-primary);
+    font-family: var(--font-detacher), system-ui, sans-serif;
     transition: background 0.4s ease, color 0.4s ease;
   }
 
@@ -342,9 +364,15 @@
   /* Ensure page content sits above the fixed dot grid */
   body > * { position: relative; z-index: 1; }
 
-  /* Headings use serif (fallback: Georgia) */
-  h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: Georgia, 'Times New Roman', serif;
+  /* Headings: h1-h2 use Detacher (heavy display), h3-h6 use Modius Extended (smaller headings) */
+  h1, h2 {
+    font-family: var(--font-detacher), system-ui, sans-serif;
+  }
+  h3, h4, h5, h6, .font-heading {
+    font-family: var(--font-modius), system-ui, sans-serif;
+  }
+  .font-display {
+    font-family: var(--font-detacher), system-ui, sans-serif;
   }
 
   ::selection { background: rgba(29,217,179,0.2); color: var(--primary-300); }
@@ -354,15 +382,21 @@
     width: 80px;
     height: 80px;
     flex-shrink: 0;
-    opacity: 0.95;
+    opacity: 0.88;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+  .icon-img,
   .card-image-icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    opacity: 0.9;
   }
   .light .card-image-icon {
-    opacity: 0.85;
+    opacity: 0.82;
   }
 
   /* ─── Inline icon styling ─── */
@@ -702,10 +736,25 @@
     border: var(--border-muted);
   }
 
-  .animate-on-scroll {
+  /* ─── Scroll reveal (ScrollReveal component) ─── */
+  .scroll-reveal {
     opacity: 0;
-    transform: translateY(12px);
-    animation: fade-in-up 0.5s ease-out forwards;
+    transform: translateY(28px);
+    transition:
+      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 
   /* ─── Step Card Components (Homepage UI Improvements) ─── */
@@ -732,36 +781,36 @@
   }
   
   .step-card-icon {
-    width: 120px;
-    height: 120px;
+    width: 88px;
+    height: 88px;
     margin-bottom: 1.5rem;
     flex-shrink: 0;
-    opacity: 0.95;
-  }
-  
-  .step-number {
-    width: 64px;
-    height: 64px;
-    border-radius: 1rem;
+    opacity: 0.88;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Monaco', 'Courier New', monospace;
-    font-size: 1.25rem;
+    padding: 4px;
+  }
+  
+  .step-number {
+    width: 56px;
+    height: 56px;
+    border-radius: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-space-mono), monospace;
+    font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
     background: linear-gradient(135deg, 
-      rgba(29, 217, 179, 0.15) 0%, 
-      rgba(139, 92, 246, 0.12) 100%
+      rgba(29, 217, 179, 0.08) 0%, 
+      rgba(139, 92, 246, 0.06) 100%
     );
-    border: 2px solid;
-    border-image-slice: 1;
-    border-image-source: linear-gradient(135deg, 
-      var(--primary-400), 
-      var(--violet-500)
-    );
+    border: 1.5px solid rgba(90, 158, 144, 0.35);
     color: var(--primary-400);
-    box-shadow: 0 4px 16px -4px rgba(29, 217, 179, 0.25);
+    box-shadow: none;
   }
   
   .step-title {
@@ -770,7 +819,7 @@
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text-primary);
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: var(--font-modius), system-ui, sans-serif;
   }
   
   .step-description {

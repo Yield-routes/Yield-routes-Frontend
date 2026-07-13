@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Space_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { Navbar } from '@/components/layout/Navbar';
@@ -7,6 +8,13 @@ import { GlobalModals } from '@/components/ui/GlobalModals';
 import { Toaster } from '@/components/ui/Toaster';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { PageTransition } from '@/components/ui/PageTransition';
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-space-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://yieldroutes.org'),
@@ -63,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="antialiased font-sans">
+      <body className={`${spaceMono.variable} antialiased font-sans`}>
         <Providers>
           <Navbar />
           <main className="container mx-auto px-4 py-8 max-w-7xl">
