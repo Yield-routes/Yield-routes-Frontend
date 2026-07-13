@@ -7,6 +7,32 @@ import { VaultChart } from '@/components/vault/VaultChart';
 import { HarvestHistory } from '@/components/vault/HarvestHistory';
 import { Icon } from '@/components/ui/Icon';
 
+interface VaultHarvest {
+  yieldAmount: number;
+  harvestedAt: string;
+}
+
+function getEstimatedApr(totalAssets: number, harvests: VaultHarvest[] = []) {
+  if (!totalAssets || !harvests.length) return null;
+
+  const validHarvests = harvests
+    .map(h => ({
+      yieldAmount: Number(h.yieldAmount),
+      harvestedAt: new Date(h.harvestedAt).getTime(),
+    }))
+    .filter(h => Number.isFinite(h.yieldAmount) && Number.isFinite(h.harvestedAt));
+
+  if (!validHarvests.length) return null;
+
+  const totalYieldHarvested = validHarvests.reduce((sum, h) => sum + h.yieldAmount, 0);
+  const firstHarvestAt = Math.min(...validHarvests.map(h => h.harvestedAt));
+  const daysSinceFirstHarvest = (Date.now() - firstHarvestAt) / 86_400_000;
+
+  if (totalYieldHarvested <= 0 || daysSinceFirstHarvest <= 0) return null;
+
+  return (totalYieldHarvested / totalAssets) * (365 / daysSinceFirstHarvest) * 100;
+}
+
 export default function VaultPage() {
   const qc = useQueryClient();
   const [mode, setMode] = useState<'deposit' | 'redeem'>('deposit');
@@ -47,6 +73,10 @@ export default function VaultPage() {
   const isError   = depositMut.isError || redeemMut.isError;
 
   const v = (c: string) => ({ color: `var(${c})` });
+  const estimatedApr = getEstimatedApr(stats?.totalAssets ?? 0, harvests ?? []);
+  const aprValue = estimatedApr == null
+    ? '—'
+    : `${estimatedApr.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -61,19 +91,44 @@ export default function VaultPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {statsLoading ? (
-          [1,2,3,4].map(i => <div key={i} className="card h-24"><div className="shimmer-line h-full w-full" /></div>)
+          [1,2,3,4,5].map(i => <div key={i} className="card h-24"><div className="shimmer-line h-full w-full" /></div>)
         ) : (
           [
             { label: 'Total Assets',   value: `${(stats?.totalAssets ?? 0).toLocaleString()} USDC` },
             { label: 'Share Price',    value: `${(stats?.sharePrice ?? 1).toFixed(6)}` },
             { label: 'Total Harvests', value: String(stats?.harvestCount ?? 0) },
             { label: 'Yield Earned',   value: `${(stats?.totalYieldHarvested ?? 0).toLocaleString()} USDC` },
+            {
+              label: 'Est. APR',
+              value: aprValue,
+              valueClassName: 'text-yield-400',
+              tooltip: 'Based on harvested yield since launch. Past performance does not indicate future returns.',
+            },
           ].map((s) => (
             <div key={s.label} className="stat-card">
-              <div className="stat-value text-2xl">{s.value}</div>
-              <div className="stat-label">{s.label}</div>
+              <div className={clsx('stat-value text-2xl', s.valueClassName)}>{s.value}</div>
+              <div className="stat-label flex items-center justify-center gap-1">
+                {s.label}
+                {s.tooltip && (
+                  <span className="group relative inline-flex">
+                    <span
+                      aria-label={s.tooltip}
+                      className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-[var(--border-strong)] text-[10px] leading-none text-[var(--text-tertiary)]"
+                      tabIndex={0}
+                    >
+                      i
+                    </span>
+                    <span
+                      role="tooltip"
+                      className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-56 -translate-x-1/2 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-900)] px-3 py-2 text-center text-xs font-normal text-[var(--text-secondary)] opacity-0 shadow-card transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                    >
+                      {s.tooltip}
+                    </span>
+                  </span>
+                )}
+              </div>
             </div>
           ))
         )}
@@ -171,3 +226,4 @@ export default function VaultPage() {
     </div>
   );
 }
+
