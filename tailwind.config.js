@@ -19,6 +19,7 @@ module.exports = {
           600: 'var(--primary-600)',
           700: 'var(--primary-700)',
         },
+        yield: { 400: 'var(--primary-400)' },
         violet:  { 400: 'var(--violet-400)', 500: 'var(--violet-500)', 600: 'var(--violet-600)' },
         gold:    { 400: 'var(--gold-400)', 500: 'var(--gold-500)' },
         pink:    { 400: 'var(--pink-400)', 500: 'var(--pink-500)' },
@@ -77,3 +78,4 @@ module.exports = {
   },
   plugins: [],
 };
+
