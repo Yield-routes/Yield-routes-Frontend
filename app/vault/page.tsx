@@ -1,12 +1,14 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { clsx } from 'clsx';
 import { VaultChart } from '@/components/vault/VaultChart';
 import { HarvestHistory } from '@/components/vault/HarvestHistory';
 import { Icon } from '@/components/ui/Icon';
 import { VaultStatsSkeleton } from '@/components/ui/Skeleton';
+import { useWalletSigner } from '@/lib/use-wallet-signer';
+import { useUIStore } from '@/lib/ui-store';
 
 interface VaultHarvest {
   yieldAmount: number;
@@ -38,7 +40,16 @@ export default function VaultPage() {
   const qc = useQueryClient();
   const [mode, setMode] = useState<'deposit' | 'redeem'>('deposit');
   const [amount, setAmount] = useState('');
-  const [wallet, setWallet] = useState('');
+
+  const { address, isConnected, isSigning, executeWithSigning } = useWalletSigner();
+  const openWalletModal = useUIStore((s) => s.openWalletModal);
+  const [wallet, setWallet] = useState(address || '');
+
+  useEffect(() => {
+    if (address) {
+      setWallet(address);
+    }
+  }, [address]);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['vault-stats'],
@@ -60,18 +71,33 @@ export default function VaultPage() {
   });
 
   const depositMut = useMutation({
-    mutationFn: () => api.deposit(wallet, Number(amount)),
+    mutationFn: async () => {
+      const activeWallet = wallet || address!;
+      return executeWithSigning(
+        () => api.deposit(activeWallet, Number(amount)),
+        async (signedPayload) => signedPayload,
+        'Vault Deposit',
+      );
+    },
     onSuccess: () => { setAmount(''); qc.invalidateQueries({ queryKey: ['vault-stats'] }); },
   });
 
   const redeemMut = useMutation({
-    mutationFn: () => api.redeem(wallet, Number(amount)),
+    mutationFn: async () => {
+      const activeWallet = wallet || address!;
+      return executeWithSigning(
+        () => api.redeem(activeWallet, Number(amount)),
+        async (signedPayload) => signedPayload,
+        'Vault Redeem',
+      );
+    },
     onSuccess: () => { setAmount(''); qc.invalidateQueries({ queryKey: ['vault-stats'] }); },
   });
 
   const handleAction = () => mode === 'deposit' ? depositMut.mutate() : redeemMut.mutate();
-  const isPending = depositMut.isPending || redeemMut.isPending;
+  const isPending = depositMut.isPending || redeemMut.isPending || isSigning;
   const isError   = depositMut.isError || redeemMut.isError;
+
 
   const v = (c: string) => ({ color: `var(${c})` });
   const estimatedApr = getEstimatedApr(stats?.totalAssets ?? 0, harvests ?? []);
@@ -173,12 +199,18 @@ export default function VaultPage() {
 
           <div className="divider-gradient" />
 
-          <button className="btn-primary w-full justify-center" onClick={handleAction}
-            disabled={isPending || !amount || !wallet || Number(amount) <= 0}>
-            {isPending
-              ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing…</>
-              : mode === 'deposit' ? 'Deposit to Vault' : 'Redeem Shares'}
-          </button>
+          {!isConnected ? (
+            <button className="btn-primary w-full justify-center" onClick={openWalletModal}>
+              Connect Wallet to {mode === 'deposit' ? 'Deposit' : 'Redeem'}
+            </button>
+          ) : (
+            <button className="btn-primary w-full justify-center" onClick={handleAction}
+              disabled={isPending || !amount || !wallet || Number(amount) <= 0}>
+              {isPending
+                ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing & Processing…</>
+                : mode === 'deposit' ? 'Deposit to Vault' : 'Redeem Shares'}
+            </button>
+          )}
 
           {isError && <p className="text-danger text-sm text-center">Transaction failed.</p>}
           {(depositMut.isSuccess || redeemMut.isSuccess) && (
