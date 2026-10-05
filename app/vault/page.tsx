@@ -6,6 +6,7 @@ import { clsx } from 'clsx';
 import { VaultChart } from '@/components/vault/VaultChart';
 import { HarvestHistory } from '@/components/vault/HarvestHistory';
 import { Icon } from '@/components/ui/Icon';
+import { VaultStatsSkeleton } from '@/components/ui/Skeleton';
 
 interface VaultHarvest {
   yieldAmount: number;
@@ -130,9 +131,9 @@ export default function VaultPage() {
                 )}
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-5 gap-8">
         <div className="lg:col-span-3 card-gradient space-y-5">

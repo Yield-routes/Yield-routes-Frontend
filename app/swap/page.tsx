@@ -5,6 +5,9 @@ import { api } from '@/lib/api';
 import type { RouteQuote, RouteLeg } from '@/lib/types';
 
 
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { SwapQuoteSkeleton } from '@/components/ui/Skeleton';
+
 const TOKENS = [
   { symbol: 'USDC', address: 'USDC_PLACEHOLDER', decimals: 7, balance: '1,245.32' },
   { symbol: 'XLM',  address: 'XLM_PLACEHOLDER',  decimals: 7, balance: '5,320.00' },
@@ -41,7 +44,8 @@ export default function SwapPage() {
   const cn = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ');
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
+    <ErrorBoundary>
+      <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       {/* Header */}
       <div className="text-center space-y-1">
         <h1 className="text-3xl font-bold tracking-tight font-heading" style={{ color: 'var(--text-primary)' }}>Swap</h1>
@@ -113,7 +117,8 @@ export default function SwapPage() {
           </div>
 
           {/* Quote details */}
-          {quote && (
+          {quoteMut.isPending && <SwapQuoteSkeleton />}
+          {quote && !quoteMut.isPending && (
             <div className="panel-subtle space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <span style={{ color: 'var(--text-tertiary)' }}>Price impact</span>
@@ -258,6 +263,7 @@ export default function SwapPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }

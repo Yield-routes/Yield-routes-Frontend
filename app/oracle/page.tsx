@@ -6,6 +6,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { AreaChart, Area, LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts';
 import type { PriceSnapshot } from '@/lib/types';
 import { Icon, type IconName } from '@/components/ui/Icon';
+import { OracleCardsSkeleton } from '@/components/ui/Skeleton';
 
 const v = (c: string) => ({ color: `var(${c})` });
 const REFETCH_INTERVAL = 30_000;
@@ -500,15 +501,7 @@ export default function OraclePage() {
 
       {/* Price cards */}
       {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="card-gradient p-5 space-y-3">
-              <div className="flex justify-between"><div className="shimmer-line h-5 w-40 rounded" /><div className="shimmer-line h-8 w-28 rounded" /></div>
-              <div className="shimmer-line h-12 w-full rounded" />
-              <div className="grid grid-cols-3 gap-4">{[1,2,3].map(j => <div key={j} className="shimmer-line h-8 rounded" />)}</div>
-            </div>
-          ))}
-        </div>
+        <OracleCardsSkeleton />
       ) : isError ? (
         <div className="card-border flex flex-col items-center py-16 space-y-4 relative overflow-hidden">
           <div className="card-icon-bg !opacity-[0.12]" style={{ color: 'var(--danger-400)' }}>

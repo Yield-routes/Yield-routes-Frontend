@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { format, formatDistanceToNow } from 'date-fns';
 import type { RegisteredPool } from '@/lib/types';
 import { Icon, type IconName } from '@/components/ui/Icon';
+import { PoolListSkeleton } from '@/components/ui/Skeleton';
 
 const v = (c: string) => ({ color: `var(${c})` });
 
@@ -320,21 +321,7 @@ export default function PoolsPage() {
 
       {/* Pool list */}
       {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="card-gradient p-4 flex items-center gap-4">
-              <div className="flex -space-x-2">
-                <div className="shimmer-line w-8 h-8 rounded-full" />
-                <div className="shimmer-line w-8 h-8 rounded-full" />
-              </div>
-              <div className="flex-1 space-y-2">
-                <div className="shimmer-line h-4 w-48 rounded" />
-                <div className="shimmer-line h-3 w-64 rounded" />
-              </div>
-              <div className="shimmer-line h-4 w-20 rounded" />
-            </div>
-          ))}
-        </div>
+        <PoolListSkeleton />
       ) : isError ? (
         <div className="card-border flex flex-col items-center py-16 space-y-4 relative overflow-hidden">
           <div className="card-icon-bg !opacity-[0.12]" style={{ color: 'var(--danger-400)' }}>
