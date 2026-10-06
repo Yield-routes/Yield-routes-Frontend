@@ -50,22 +50,31 @@ export const useWalletStore = create<WalletState>()(
               return null;
             }
 
-            const accessObj = (await requestAccess()) as string | AccessResponse;
-            const address =
-              typeof accessObj === 'string'
-                ? accessObj
-                : accessObj?.address || (await getAddress());
+            const accessObj = await requestAccess();
+            let addressStr = '';
+            if (typeof accessObj === 'string') {
+              addressStr = accessObj;
+            } else if (accessObj && typeof accessObj === 'object' && 'address' in accessObj && typeof (accessObj as any).address === 'string') {
+              addressStr = (accessObj as any).address;
+            } else {
+              const fallbackAddr = await getAddress();
+              if (typeof fallbackAddr === 'string') {
+                addressStr = fallbackAddr;
+              } else if (fallbackAddr && typeof fallbackAddr === 'object' && 'address' in fallbackAddr && typeof (fallbackAddr as any).address === 'string') {
+                addressStr = (fallbackAddr as any).address;
+              }
+            }
 
-            if (!address) {
+            if (!addressStr) {
               throw new Error('No public key returned from Freighter.');
             }
 
-            set({ address, provider: 'freighter', isConnecting: false });
+            set({ address: addressStr, provider: 'freighter', isConnecting: false });
             toast.success(
               'Wallet Connected',
-              `Connected as ${address.slice(0, 4)}...${address.slice(-4)}`,
+              `Connected as ${addressStr.slice(0, 4)}...${addressStr.slice(-4)}`,
             );
-            return address;
+            return addressStr;
           }
 
           // Fallback demo connection for other wallet providers
