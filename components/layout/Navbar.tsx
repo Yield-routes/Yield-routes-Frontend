@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
 import { useUIStore } from '@/lib/ui-store';
+import { useWalletStore } from '@/lib/wallet-store';
 import { NetworkSwitcher } from '@/components/ui/NetworkSwitcher';
 import { Icon, type IconName } from '@/components/ui/Icon';
 
@@ -26,6 +27,8 @@ export function Navbar() {
   const [spinning, setSpinning] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { drawer, openDrawer, closeDrawer, openWalletModal } = useUIStore();
+  const { address, disconnect } = useWalletStore();
+
 
   // Close mobile menu on route change
   useEffect(() => { setMobileOpen(false); }, [path]);
@@ -122,11 +125,27 @@ export function Navbar() {
               </span>
             </button>
 
-            <button onClick={openWalletModal}
-              className="btn-primary text-xs uppercase tracking-wider px-4 py-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-soft" />
-              Connect
-            </button>
+            {address ? (
+              <div className="flex items-center gap-1.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl px-3 py-1.5">
+                <span className="w-2 h-2 rounded-full bg-[var(--primary-400)]" />
+                <span className="text-xs font-mono font-medium" style={{ color: 'var(--text-primary)' }}>
+                  {address.slice(0, 4)}...{address.slice(-4)}
+                </span>
+                <button
+                  onClick={disconnect}
+                  title="Disconnect wallet"
+                  className="text-xs ml-1 text-[var(--text-muted)] hover:text-danger transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button onClick={openWalletModal}
+                className="btn-primary text-xs uppercase tracking-wider px-4 py-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-soft" />
+                Connect
+              </button>
+            )}
 
             {/* Hamburger — mobile only */}
             <button

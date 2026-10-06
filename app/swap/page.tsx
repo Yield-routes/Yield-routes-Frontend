@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { useWalletSigner } from '@/lib/use-wallet-signer';
+import { useUIStore } from '@/lib/ui-store';
 import type { RouteQuote, RouteLeg } from '@/lib/types';
 
 
@@ -28,15 +30,26 @@ export default function SwapPage() {
   const [slippage, setSlippage] = useState(0.5);
   const [quote, setQuote]       = useState<RouteQuote | null>(null);
 
+  const { isConnected, isSigning, executeWithSigning } = useWalletSigner();
+  const openWalletModal = useUIStore((s) => s.openWalletModal);
+
   const quoteMut = useMutation({
     mutationFn: () => api.getQuote(tokenIn.address, tokenOut.address, Number(amountIn), 3),
     onSuccess: setQuote,
   });
 
   const executeMut = useMutation({
-    mutationFn: () => api.executeRoute(quote!.id, 'PLACEHOLDER_WALLET', quote!.expectedOut * (1 - slippage / 100)),
+    mutationFn: async () => {
+      const minOut = quote!.expectedOut * (1 - slippage / 100);
+      return executeWithSigning(
+        (walletAddr) => api.executeRoute(quote!.id, walletAddr, minOut),
+        async (signedPayload) => signedPayload,
+        'Swap',
+      );
+    },
     onSuccess: () => { setQuote(null); setAmountIn(''); },
   });
+
 
   const swapTokens = () => { setTokenIn(tokenOut); setTokenOut(tokenIn); setQuote(null); };
   const impactColor = !quote ? '' : quote.priceImpactBps < 100 ? 'text-[var(--primary-400)]' : quote.priceImpactBps < 300 ? 'text-[var(--gold-400)]' : 'text-danger';
@@ -165,7 +178,12 @@ export default function SwapPage() {
           <div className="divider-gradient" />
 
           {/* Action */}
-          {!quote ? (
+          {!isConnected ? (
+            <button className="btn-primary w-full justify-center"
+              onClick={openWalletModal}>
+              Connect Wallet to Swap
+            </button>
+          ) : !quote ? (
             <button className="btn-primary w-full justify-center"
               onClick={() => quoteMut.mutate()}
               disabled={!amountIn || Number(amountIn) <= 0 || quoteMut.isPending}>
@@ -176,9 +194,9 @@ export default function SwapPage() {
           ) : (
             <button className="btn-primary w-full justify-center"
               onClick={() => executeMut.mutate()}
-              disabled={executeMut.isPending}>
-              {executeMut.isPending ? (
-                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Swapping…</>
+              disabled={executeMut.isPending || isSigning}>
+              {executeMut.isPending || isSigning ? (
+                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing & Swapping…</>
               ) : `Swap ${tokenIn.symbol} → ${tokenOut.symbol}`}
             </button>
           )}

@@ -1,7 +1,9 @@
 'use client';
 import { useUIStore } from '@/lib/ui-store';
+import { useWalletStore } from '@/lib/wallet-store';
 
 const v = (c: string) => ({ color: `var(${c})` });
+
 
 const wallets = [
   {
@@ -46,8 +48,10 @@ const assets = [
 
 export function WalletModal() {
   const { walletModal, closeWalletModal } = useUIStore();
+  const { connect, isConnecting } = useWalletStore();
 
   if (!walletModal) return null;
+
 
   return (
     <div className="wallet-modal">
@@ -70,6 +74,11 @@ export function WalletModal() {
           <p className="text-[11px] uppercase tracking-wider font-medium mb-2" style={v('--text-tertiary')}>Select wallet</p>
           {wallets.map(w => (
             <button key={w.id}
+              onClick={async () => {
+                const connected = await connect(w.id as import('@/lib/wallet-store').WalletProviderId);
+                if (connected) closeWalletModal();
+              }}
+              disabled={isConnecting}
               className="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 text-left group"
               style={{ background: 'var(--input-bg)', border: 'var(--border-muted)' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.background = 'var(--surface-800)' }}
