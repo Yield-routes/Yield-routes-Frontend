@@ -118,11 +118,11 @@ export default function VaultPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {statsLoading ? (
-          [1,2,3,4,5].map(i => <div key={i} className="card h-24"><div className="shimmer-line h-full w-full" /></div>)
-        ) : (
-          [
+      {statsLoading ? (
+        <VaultStatsSkeleton />
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[
             { label: 'Total Assets',   value: `${(stats?.totalAssets ?? 0).toLocaleString()} USDC` },
             { label: 'Share Price',    value: `${(stats?.sharePrice ?? 1).toFixed(6)}` },
             { label: 'Total Harvests', value: String(stats?.harvestCount ?? 0) },

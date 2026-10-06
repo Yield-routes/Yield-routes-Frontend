@@ -50,18 +50,18 @@ export const useWalletStore = create<WalletState>()(
               return null;
             }
 
-            const accessObj = await requestAccess();
+            const accessObj = (await requestAccess()) as string | AccessResponse | null;
             let addressStr = '';
             if (typeof accessObj === 'string') {
               addressStr = accessObj;
-            } else if (accessObj && typeof accessObj === 'object' && 'address' in accessObj && typeof (accessObj as any).address === 'string') {
-              addressStr = (accessObj as any).address;
+            } else if (accessObj && typeof accessObj === 'object' && typeof accessObj.address === 'string') {
+              addressStr = accessObj.address;
             } else {
-              const fallbackAddr = await getAddress();
+              const fallbackAddr = (await getAddress()) as string | AccessResponse | null;
               if (typeof fallbackAddr === 'string') {
                 addressStr = fallbackAddr;
-              } else if (fallbackAddr && typeof fallbackAddr === 'object' && 'address' in fallbackAddr && typeof (fallbackAddr as any).address === 'string') {
-                addressStr = (fallbackAddr as any).address;
+              } else if (fallbackAddr && typeof fallbackAddr === 'object' && typeof fallbackAddr.address === 'string') {
+                addressStr = fallbackAddr.address;
               }
             }
 
